@@ -1,6 +1,6 @@
 FROM phusion/baseimage:0.11
 
-ENV VERSION=4.0.0b4
+ENV VERSION=4.0.0b5
 ENV HOME=/home/weewx
 
 RUN apt-get -y update
