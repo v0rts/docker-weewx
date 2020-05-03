@@ -1,6 +1,6 @@
 FROM phusion/baseimage:0.11
 
-ENV WEEWX_VERSION=4.0.0b18
+ENV WEEWX_VERSION=4.0.0
 ENV HOME=/home/weewx
 
 RUN apt-get -y update
@@ -32,21 +32,7 @@ RUN pip3 install configobj
 # install weewx from source
 ADD dist/weewx-$WEEWX_VERSION /tmp/
 RUN cd /tmp && ./setup.py build
-RUN cd /tmp && ./setup.py install
-
-# add all confs and extras to the install
-# based on CONF env, copy the dirs to the install using CMD cp
-
-# override this env var to run another configuration
-ENV CONF default
-
-# The CONF env var should correspond to the name of a sub-dir under conf/
-# ssh keys for rsync
-
-#RUN mkdir /root/.ssh
-ADD conf/ $HOME/conf/
-RUN chmod -R 777 $HOME
-RUN chmod -R 600 /root/.ssh
+RUN cd /tmp && echo "tom.org simulator\n1211, foot\n44.491\n-71.689\nn\nus\n3\n" | ./setup.py install
 
 RUN mkdir /home/weewx/tmp
 RUN mkdir /home/weewx/public_html
