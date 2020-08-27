@@ -1,6 +1,6 @@
 FROM phusion/baseimage:0.11
 
-ENV WEEWX_VERSION=4.0.0
+ENV WEEWX_VERSION=4.1.1
 ENV HOME=/home/weewx
 
 RUN apt-get -y update
@@ -12,23 +12,10 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # debian, ubuntu, mint, raspbian
 # for systems that do not have python 3 installed (for example, ubuntu 18.04 and later):
-RUN apt-get install -y python3 python3-pip python3-configobj python3-serial python3-mysqldb python3-usb
-RUN pip3 install Cheetah3 Pillow-PIL pyephem setuptools
-RUN apt-get install -y default-mysql-client
-RUN apt-get install -y sqlite3 curl rsync ssh tzdata wget gftp syslog-ng
+RUN apt-get install -y python3 python3-pip python3-configobj python3-serial python3-mysqldb python3-usb default-mysql-client sqlite3 curl rsync ssh tzdata wget gftp syslog-ng xtide xtide-data
+RUN pip3 install Cheetah3 Pillow-PIL pyephem setuptools requests dnspython paho-mqtt configobj
 RUN ln -f -s /usr/bin/python3 /usr/bin/python
 RUN mkdir /var/log/weewx
-
-RUN apt-get -y install xtide xtide-data
-RUN pip3 install requests
-
-# for the mongo extension
-#RUN pip install pymongo
-RUN pip3 install dnspython
-
-RUN pip3 install paho-mqtt
-RUN pip3 install configobj
-
 # install weewx from source
 ADD dist/weewx-$WEEWX_VERSION /tmp/
 RUN cd /tmp && ./setup.py build
