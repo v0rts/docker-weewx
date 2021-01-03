@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-VERSION=4.3.0b1
+VERSION=4.3.0b2
 
 docker build -t mitct02/weewx:$VERSION .
 docker tag mitct02/weewx:$VERSION mitct02/weewx:latest
