@@ -13,6 +13,13 @@ To be able to serve the html up via a web server, all you need to do is mount a 
 
 You can then run a web server locally that uses the volume you mapped as its html root.
 
+Here is a more comprehensive example:
+
+docker run -it --rm --volume /Users/tom/extensions:/home/weewx/extensions --volume /Users/tom/weewx.conf:/home/weewx/weewx.conf --volume /tmp/public_html:/home/weewx/public_html --volume /Users/tom/bin/user:/home/weewx/bin/user --volume /Users/tom/archive:/home/weewx/archive mitct02/weewx:4.3.0
+
+This one maps volumes for extensions, bin/user, weewx.conf itself, public_html, and archive/ where the sqllite database is stored
+Note that docker is called with the `-it` and `--rm` flags, which ensure that the container is killed when exited.
+
 ### Building a Child Image:
 
 The more complex way of using this image, which is useful if you want to run the image
