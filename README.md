@@ -1,19 +1,19 @@
 
-###Basic usage:
+### Basic usage:
 
 The most basic usage of this image is to simply map a volume to a local weewx.conf like this:
 
-`docker run -it --rm --volume /Users/tom/weewx.conf:/home/weewx/weewx.conf mitct02/weewx:4.3.0`
+`docker run -d --volume /Users/tom/weewx.conf:/home/weewx/weewx.conf mitct02/weewx:4.3.0`
 
 The problem with this configuration is that it keeps your generated html files (./public_html) in your running Docker container.
 This is OK if you have rsync or something else set in `weewx.conf` up to export the html content out of your container.
 To be able to serve the html up via a web server, all you need to do is mount a local directory as public_html like this:
 
-``docker run -it --rm --volume /Users/tom/weewx.conf:/home/weewx/weewx.conf --volume /var/www/html/weewx/public_html/:/home/weewx/public_html/ mitct02/weewx:4.3.0``
+``docker run -d --volume /Users/tom/weewx.conf:/home/weewx/weewx.conf --volume /var/www/html/weewx/public_html/:/home/weewx/public_html/ mitct02/weewx:4.3.0``
 
 You can then run a web server locally that uses the volume you mapped as its html root.
 
-###Building a Child Image:
+### Building a Child Image:
 
 The more complex way of using this image, which is useful if you want to run the image
  elsewhere, like in Kubernetes, is to use this image as a base image and extend it to install plugins, etc.
