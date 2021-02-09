@@ -57,7 +57,8 @@ docker run -d --name=weewx-default --restart=always -e CONF=default -v /tmp/http
 
 Replace /mnt/docker/weewx with your storage location. If you are using the gw1000 driver from here: https://github.com/gjr80/weewx-gw1000 ,put the gw1000.py file, https://raw.githubusercontent.com/gjr80/weewx-gw1000/master/bin/user/gw1000.py, into your weewx volume on the host (see example below).
 
-```version: '2.3'
+```
+version: '2.3'
 services:
   weewx:
     image: mitct02/weewx
@@ -69,4 +70,5 @@ services:
 \#      - /mnt/docker/weewx/gw1000.py:/home/weewx/bin/user/gw1000.py #Optional
     networks:
       - internal
-    restart: unless-stopped```
+    restart: unless-stopped
+    ```
