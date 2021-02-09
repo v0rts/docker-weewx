@@ -67,8 +67,8 @@ services:
       - /mnt/docker/weewx/weewx.sbd:/home/weewx/weewx.sbd
       - /mnt/docker/weewx/public_html:/home/weewx/public_html 
       - /mnt/docker/weewx/weewx.conf:/home/weewx/weewx.conf
-\#      - /mnt/docker/weewx/gw1000.py:/home/weewx/bin/user/gw1000.py #Optional
+#      - /mnt/docker/weewx/gw1000.py:/home/weewx/bin/user/gw1000.py #Optional
     networks:
       - internal
     restart: unless-stopped
-    ```
+```
