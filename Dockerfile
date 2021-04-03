@@ -1,4 +1,3 @@
-#FROM phusion/baseimage:0.11
 FROM phusion/baseimage:18.04-1.0.0-amd64
 ENV WEEWX_VERSION=4.5.1
 ENV HOME=/home/weewx
