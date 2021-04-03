@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-VERSION=4.5.0a3
+VERSION=4.5.1
 
 docker build -t mitct02/weewx:$VERSION .
 docker push mitct02/weewx:$VERSION
