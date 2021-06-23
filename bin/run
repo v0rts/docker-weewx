@@ -11,4 +11,5 @@ echo "using $CONF"
 
 cd $HOME
 
-./bin/weewxd $CONF_FILE > /dev/stdout
+
+ while true; do ./bin/weewxd $CONF_FILE > /dev/stdout; sleep 60; done
