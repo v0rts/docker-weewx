@@ -12,4 +12,4 @@ echo "using $CONF"
 cd $HOME
 
 
- while true; do ./bin/weewxd $CONF_FILE > /dev/stdout; sleep 60; done
+while true; do ./bin/weewxd $CONF_FILE > /dev/stdout; sleep 60; done
