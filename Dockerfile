@@ -1,5 +1,5 @@
 FROM phusion/baseimage:18.04-1.0.0-amd64
-ENV WEEWX_VERSION=4.6.0b3
+ENV WEEWX_VERSION=4.6.0b7
 ENV HOME=/home/weewx
 
 RUN apt-get -y update
@@ -11,8 +11,8 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # debian, ubuntu, mint, raspbian
 # for systems that do not have python 3 installed (for example, ubuntu 18.04 and later):
-RUN apt-get install -y python3 python3-pip python3-configobj python3-serial python3-mysqldb python3-usb default-mysql-client sqlite3 curl rsync ssh tzdata wget gftp syslog-ng xtide xtide-data
-RUN pip3 install Cheetah3 Pillow-PIL pyephem setuptools requests dnspython paho-mqtt configobj
+RUN apt-get install -y python3 python3-pip python3-configobj python3-serial python3-mysqldb python3-usb default-mysql-client sqlite3 curl rsync ssh tzdata wget gftp syslog-ng xtide xtide-data zlib1g-dev libjpeg-dev libfreetype6-dev
+RUN pip3 install Cheetah3 Pillow pyephem setuptools requests dnspython paho-mqtt configobj
 RUN ln -f -s /usr/bin/python3 /usr/bin/python
 RUN mkdir /var/log/weewx
 # install weewx from source
@@ -31,4 +31,3 @@ RUN chmod 755 /etc/service/weewx/run
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 CMD ["/sbin/my_init"]
-
