@@ -6,3 +6,4 @@ Dockerfile.template
 
 docker-weewx.code-workspace
 /.vscode/
+/log.txt
