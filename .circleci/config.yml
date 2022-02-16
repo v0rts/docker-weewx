@@ -1,7 +1,8 @@
 version: 2.1
 jobs:
   build:
-    machine: true
+    machine:
+      image: ubuntu-2004:202201-02
     steps:
       - checkout # check out the code in the project directory
       - run: docker build -t mitct02/weewx:$CIRCLE_BRANCH  .
