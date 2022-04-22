@@ -1,0 +1,10 @@
+daemon
+schemas
+six
+user
+weecfg
+weedb
+weeimport
+weeplot
+weeutil
+weewx
