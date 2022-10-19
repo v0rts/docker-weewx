@@ -1,5 +1,5 @@
 FROM phusion/baseimage:18.04-1.0.0-amd64
-ENV WEEWX_VERSION=4.8.0
+ENV WEEWX_VERSION=4.9.0b1
 ENV HOME=/home/weewx
 
 RUN apt-get -y update
