@@ -1,6 +1,6 @@
 FROM phusion/baseimage:master
 
-ENV WEEWX_VERSION=4.9.0b1
+ENV WEEWX_VERSION=4.9.1
 ENV HOME=/home/weewx
 
 RUN apt-get -y update
