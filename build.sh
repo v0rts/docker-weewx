@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-VERSION=4.9.1-multi
+VERSION=4.9.1
 
 docker buildx build --push --platform linux/amd64,linux/arm64,linux/arm/v7 -t mitct02/weewx:$VERSION .
 #docker push mitct02/weewx:$VERSION
