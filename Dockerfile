@@ -5,7 +5,7 @@ RUN apk add alpine-conf
 # TODO parameterize this
 RUN setup-timezone America/New_York
 RUN apk add gcc zlib-dev jpeg-dev build-base linux-headers freetype-dev \
-    && apk add --update --no-cache python3 python3-dev py3-pyserial py3-usb sqlite wget rsync openssh && ln -sf python3 /usr/bin/python \
+    && apk add --update --no-cache python3 python3-dev py3-pyserial py3-usb py3-pymysql sqlite wget rsync openssh && ln -sf python3 /usr/bin/python \
 # python3-configobj python3-serial python3-mysqldb python3-usb default-mysql-client sqlite3 curl rsync ssh tzdata wget gftp syslog-ng xtide xtide-data zlib1g-dev libjpeg-dev libfreetype6-dev
     && python3 -m ensurepip \
     && pip3 install --no-cache --upgrade Cheetah3 Pillow image pyephem setuptools requests dnspython paho-mqtt configobj
