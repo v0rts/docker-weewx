@@ -1,9 +1,9 @@
 FROM alpine:3.17.0
 ENV WEEWX_VERSION=4.9.1
 ENV HOME=/home/weewx
-ENV TZ=America/New_York
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-#ENV PYTHONUNBUFFERED=1
+RUN apk add alpine-conf
+# TODO parameterize this
+RUN setup-timezone America/New_York
 RUN apk add gcc zlib-dev jpeg-dev build-base linux-headers freetype-dev \
     && apk add --update --no-cache python3 python3-dev py3-pyserial py3-usb sqlite wget rsync openssh && ln -sf python3 /usr/bin/python \
 # python3-configobj python3-serial python3-mysqldb python3-usb default-mysql-client sqlite3 curl rsync ssh tzdata wget gftp syslog-ng xtide xtide-data zlib1g-dev libjpeg-dev libfreetype6-dev
