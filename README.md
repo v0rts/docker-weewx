@@ -7,6 +7,7 @@ The most basic usage of this image is to simply map a volume to a local weewx.co
 
 The problem with this configuration is that it keeps your generated html files (./public_html) in your running Docker container.
 This is OK if you have rsync or something else set in `weewx.conf` up to export the html content out of your container.
+
 To be able to serve the html up via a web server, all you need to do is mount a local directory as public_html like this:
 
 ``docker run -d --volume /Users/tom/weewx.conf:/home/weewx/weewx.conf --volume /var/www/html/weewx/public_html/:/home/weewx/public_html/ mitct02/weewx:4.3.0``
@@ -17,7 +18,7 @@ Here is a more comprehensive example:
 
 docker run -it --rm --volume /Users/tom/extensions:/home/weewx/extensions --volume /Users/tom/weewx.conf:/home/weewx/weewx.conf --volume /tmp/public_html:/home/weewx/public_html --volume /Users/tom/bin/user:/home/weewx/bin/user --volume /Users/tom/archive:/home/weewx/archive mitct02/weewx:4.3.0
 
-This one maps volumes for extensions, bin/user, weewx.conf itself, public_html, and archive/ where the sqllite database is stored
+This one maps volumes for extensions, bin/user, weewx.conf itself, public_html, and archive/ where the sqlite database is stored
 Note that docker is called with the `-it` and `--rm` flags, which ensure that the container is killed when exited.
 
 ### Building a Child Image:
@@ -65,10 +66,12 @@ services:
     container_name: weewx
     volumes:
       - /mnt/docker/weewx/weewx.sbd:/home/weewx/weewx.sbd
-      - /mnt/docker/weewx/public_html:/home/weewx/public_html 
+      - /mnt/docker/weewx/public_html:/home/weewx/public_html
       - /mnt/docker/weewx/weewx.conf:/home/weewx/weewx.conf
 #      - /mnt/docker/weewx/gw1000.py:/home/weewx/bin/user/gw1000.py #Optional
     networks:
       - internal
     restart: unless-stopped
 ```
+### Misc notes
+* To override America/New_York as the timezone, populate the TZ environment variable with your TZ (in the same format)
