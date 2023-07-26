@@ -1,0 +1,179 @@
+# yaml-language-server: $schema=https://squidfunk.github.io/mkdocs-material/schema.json
+site_name: 'weewx documentation'
+site_url: 'https://www.weewx.com'
+site_author: "Tom Keffer <tkeffer@gmail.com>"
+repo_url: https://github.com/weewx/weewx
+repo_name: WeeWX GitHub Repository
+# Shut off the edit on GitHub feature:
+edit_uri: ''
+copyright: Copyright © 2009-2023 Thomas Keffer and Matthew Wall, all rights reserved
+theme:
+  name: 'material'
+  logo: 'images/logo-weewx.png'
+  favicon: 'images/favicon.png'
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.indexes
+    - navigation.top
+    - toc.follow
+    - search.highlight
+    - search.share
+    - search.suggest
+
+  font:
+    text: 'Noto Sans'
+    code: 'Inconsolata Mono'
+
+  palette:
+    - scheme: default
+      primary: teal
+      accent: white
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to dark mode
+    - scheme: slate
+      primary: teal
+      accent: indigo
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to light mode
+
+extra_css:
+  - css/weewx_ui.css
+
+docs_dir: 'docs_src'
+site_dir: 'build/docs'
+
+nav:
+  - "Quick starts":
+      - "Quick starts": ./quickstarts/index.md
+      - Debian: ./quickstarts/debian.md
+      - RedHat: ./quickstarts/redhat.md
+      - SuSE: ./quickstarts/suse.md
+      - pip: ./quickstarts/pip.md
+      - "Migrating to V5": ./quickstarts/v5-upgrade.md
+
+  - "User's guide":
+      - "Introduction": ./usersguide/index.md
+      - "System requirements": ./usersguide/system-requirements.md
+      - "Installing WeeWX": ./usersguide/installing-weewx.md
+      - "Where to find things" : ./usersguide/where.md
+      - "Running WeeWX": ./usersguide/running-weewx.md
+      - "Web server integration": ./usersguide/webserver-integration.md
+      - "Backup & restore": ./usersguide/backing-up-weewx.md
+      - "Configuring MySQL": ./usersguide/mysql-mariadb-config.md
+      - "Troubleshooting": ./usersguide/troubleshooting-guide.md
+      - "Reference: options":
+        - "Overview": ./usersguide/weewx-config-file/index.md
+        - "General options": ./usersguide//weewx-config-file/general.md
+        - "[Station]": ./usersguide/weewx-config-file/stations-config.md
+        - "[StdRESTful]": ./usersguide/weewx-config-file/stdrestful-config.md
+        - "[StdReport]": ./usersguide/weewx-config-file/stdreport-config.md
+        - "[StdConvert]": ./usersguide/weewx-config-file/stdconvert-config.md
+        - "[StdCalibrate]": ./usersguide/weewx-config-file/stdcalibrate-config.md
+        - "[StdQC]": ./usersguide/weewx-config-file/stdqc-config.md
+        - "[StdWXCalculate]": ./usersguide/weewx-config-file/stdwxcalculate-config.md
+        - "[StdArchive]": ./usersguide/weewx-config-file/stdarchive.md
+        - "[StdTimeSynch]": ./usersguide/weewx-config-file/stdtimesynch.md
+        - "[DataBindings]": ./usersguide/weewx-config-file/data-bindings.md
+        - "[Databases]": ./usersguide/weewx-config-file/databases.md
+        - "[DatabaseTypes]": ./usersguide/weewx-config-file/databasetypes.md
+        - "[Engine]": ./usersguide/weewx-config-file/engine.md
+
+  - Customization guide:
+    - "Introduction": custom/index.md
+    - "Customizing reports": custom/custom_reports.md
+    - "The Cheetah generator": custom/cheetah.md
+    - "The Image generator": custom/image_generator.md
+    - "Multiple data bindings": custom/multiple_bindings.md
+    - "Localization": custom/localization.md
+    - "Customizing the service engine": custom/service_engine.md
+    - "Customizing the database": custom/database.md
+    - "Customizing units": custom/units.md
+    - "Derived types": custom/derived.md
+    - "Custom drivers": custom/drivers.md
+    - "Extensions": custom/extensions.md
+    - "Reference: options": custom/options_ref.md
+    - "Appendix": custom/appendix.md
+
+  - Utilities:
+      - Overview: utilities/index.md
+      - weectl:
+          - Overview: weectl/index.md
+          - weectl station: weectl/station.md
+          - weectl extension: weectl/extension.md
+      - wee_database: utilities/utilities.htm#wee_database_utility
+      - wee_debug: utilities/utilities.htm#wee_debug_utility
+      - wee_device: utilities/utilities.htm#wee_device_utility
+      - wee_import: utilities/utilities.htm#wee_import_utility
+      - wee_reports: utilities/utilities.htm#wee_reports_utility
+      - weewxd: utilities/utilities.htm#weewxd
+  - "Upgrade guide": upgrading.htm
+  - "Hardware guide": hardware.htm
+  - "Notes for developers": devnotes.md
+  - "Hardware comparison": hardware.htm
+  - "Change log": changes.md
+  - "Support": support.md
+
+plugins:
+  - search
+
+markdown_extensions:
+
+  # Code highlighting in ``` ``` blocks
+  # https://squidfunk.github.io/mkdocs-material/setup/extensions/python-markdown-extensions/#highlight
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+
+  - pymdownx.superfences
+
+  # https://squidfunk.github.io/mkdocs-material/setup/extensions/python-markdown-extensions/#details
+  - pymdownx.details
+
+  # linkifies URL and email links without having to wrap them in Markdown syntax. Also, allows shortens repository issue, pull request, and commit links.
+  - pymdownx.magiclink
+
+  # Highlight words with ==mark me==
+  - pymdownx.mark
+
+  # Adds support for strike through ~~strike me~~ and subscript text~a\ subscript~
+  - pymdownx.tilde
+
+  # Tabbed provides a syntax to easily add tabbed Markdown content.
+  # https://facelessuser.github.io/pymdown-extensions/extensions/tabbed/
+  - pymdownx.tabbed:
+      alternate_style: true
+
+  - pymdownx.snippets:
+      # auto_append abbreviations.md to every file
+      # https://squidfunk.github.io/mkdocs-material/reference/tooltips/#adding-a-glossary
+      auto_append:
+        - docs/abbreviations.md
+
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+
+  # Adds the ability to define abbreviations (https://squidfunk.github.io/mkdocs-material/reference/tooltips/)
+  - abbr
+
+  # block-styled side content
+  # https://squidfunk.github.io/mkdocs-material/reference/admonitions/
+  - admonition
+
+  - attr_list
+
+  # Adds syntax for defining footnotes in Markdown documents (https://squidfunk.github.io/mkdocs-material/reference/footnotes/)
+  - footnotes
+
+  - md_in_html
+
+  - tables
+
+  # Table of Contents`
+  # https://python-markdown.github.io/extensions/toc/
+  - toc:
+      permalink: true
