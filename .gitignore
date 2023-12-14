@@ -8,3 +8,7 @@ docker-weewx.code-workspace
 /.vscode/
 /log.txt
 /tmp/
+/public_html/
+/dist/weewx-5.0.0/weewx.conf
+/weewx.conf
+/archive/weewx.sdb
