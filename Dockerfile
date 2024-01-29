@@ -8,11 +8,13 @@ ENV PATH=/usr/bin:$PATH
 RUN addgroup weewx && \
     adduser -G weewx -D weewx
 
-RUN apk add python3 python3-dev py3-pip gcc libc-dev libffi-dev && \
+RUN apk add python3 python3-dev py3-pip gcc libc-dev libffi-dev rsync openssh-client rsync openssh-client && \
     python3 -m pip install pip --upgrade && \
     python3 -m pip install cryptography && \
     python3 -m pip install pip --upgrade && \
-    python3 -m pip install cryptography
+    python3 -m pip install cryptography && \
+    python3 -m pip install paho-mqtt
+
 
 USER weewx
 COPY conf-fragments/ /tmp/
