@@ -9,6 +9,8 @@ docker-weewx.code-workspace
 /log.txt
 /tmp/
 /public_html/
+/archive/
+/public_html/
 /dist/weewx-5.0.0/weewx.conf
 /weewx.conf
 /archive/weewx.sdb
