@@ -1,6 +1,6 @@
 FROM debian:buster-slim
 MAINTAINER Tom Mitchell "tom@tom.org"
-ENV VERSION=5.0.0
+ENV VERSION=5.0.0-1
 ENV WEEWX_ROOT=/home/weewx/weewx-data
 ENV TZ=America/New_York
 ENV PATH=/usr/bin:$PATH
@@ -17,7 +17,7 @@ RUN echo "deb [arch=all] https://weewx.com/apt/python3 buster main" | \
     tee /etc/apt/sources.list.d/weewx.list
 
 RUN apt update
-RUN DEBIAN_FRONTEND=noninteractive apt install -y weewx
+RUN DEBIAN_FRONTEND=noninteractive apt install -y weewx=$VERSION
 
 USER weewx
 RUN mkdir -p $WEEWX_ROOT
