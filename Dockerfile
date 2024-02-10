@@ -26,7 +26,8 @@ RUN DEBIAN_FRONTEND=noninteractive apt install -y weewx=$WEEWX_VERSION
 
 USER weewx
 RUN mkdir -p $WEEWX_ROOT
-COPY conf-fragments/ /tmp/
+COPY conf-fragments/ /tmp/conf-fragments/
+RUN cat /tmp/conf-fragments/* >> /etc/weewx/weewx.conf
 
 RUN /usr/bin/weectl station create --no-prompt
 ADD ./bin/run.sh $WEEWX_ROOT/bin/run.sh
