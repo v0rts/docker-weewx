@@ -1,4 +1,4 @@
-WEEWX_VERSION=5.0.0
+WEEWX_VERSION=5.0.2-1
 docker pull mitct02/weewx:$WEEWX_VERSION
 
 export TZ=America/New_York
