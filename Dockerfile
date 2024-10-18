@@ -1,31 +1,73 @@
-FROM alpine:3.17.0
-MAINTAINER Tom Mitchell "tom@tom.org"
+FROM debian:bookworm-slim
 
+MAINTAINER Tom Mitchell "tom@tom.org"
+ENV VERSION=5.1.0
+ENV TAG=v5.1.0
+ENV WEEWX_ROOT=/home/weewx/weewx-data
 ENV WEEWX_VERSION=4.10.0
 ENV HOME=/home/weewx
 ENV TZ=America/New_York
+ENV PATH=/usr/bin:$PATH
 
-#wget http://www.weewx.com/downloads/released_versions/weewx-4.9.1.tar.gz -O /tmp/weewx.tgz \
-#      && cd /tmp && tar zxvf /tmp/weewx*.tgz \
-#      && cd weewx-* && python3 ./setup.py build && python3 ./setup.py install --no-prompt \
+#    &&  apt-get install curl bash python3 python3-dev python3-pip python3-venv gcc libc-dev libffi-dev tzdata rsync openssh-client openssl git -y
 
-ADD dist/weewx-$WEEWX_VERSION /tmp/weewx/
-COPY conf-fragments/ /tmp/
-RUN apk add --update --no-cache --virtual deps gcc zlib-dev jpeg-dev python3-dev build-base linux-headers freetype-dev py3-pip alpine-conf \
-    && apk add --no-cache python3 py3-pyserial py3-usb py3-pymysql sqlite wget rsync openssh tzdata \
-    && ln -sf python3 /usr/bin/python \
-    && pip3 install --no-cache --upgrade Cheetah3 Pillow image pyephem setuptools requests dnspython paho-mqtt configobj \
-    && cd /tmp/weewx \
-    && python3 ./setup.py build \
-    && python3 ./setup.py install --no-prompt \
-    && mkdir -p /var/log/weewx /tmp/weewx /home/weewx/public_html \
-    && rm -rf /tmp/weewx \
-    && apk del deps \
-    && cat /tmp/*.conf >> /home/weewx/weewx.conf \
-    && rm -rf /tmp/*.conf \
-    && sed -i -e s:unspecified:Simulator: /home/weewx/weewx.conf
-CMD ["/home/weewx/bin/weewxd", "/home/weewx/weewx.conf"]
+RUN apt-get update \
+    &&  apt-get install wget unzip python3 python3-dev python3-pip python3-venv tzdata rsync openssh-client openssl git libffi-dev python3-setuptools libjpeg-dev -y
+#RUN python3 -m pip install pip --upgrade \
+#    && python3 -m pip install setuptools \
+#    && python3 -m pip install cryptography \
+#    && python3 -m pip install paho-mqtt
 
-#wget http://www.weewx.com/downloads/released_versions/weewx-4.9.1.tar.gz -O /tmp/weewx.tgz \
-#      && cd /tmp && tar zxvf /tmp/weewx*.tgz \
-#      && cd weewx-* && python3 ./setup.py build && python3 ./setup.py install --no-prompt \
+RUN addgroup weewx \
+    && useradd -m -g weewx weewx \
+    && chown -R weewx:weewx /home/weewx \
+    && chmod -R 755 /home/weewx
+
+USER weewx
+RUN python3 -m venv /home/weewx/weewx-venv \
+    && chmod -R 755 /home/weewx \
+    && . /home/weewx/weewx-venv/bin/activate \
+    && python3 -m pip install Pillow \
+    && python3 -m pip install CT3 \
+    && python3 -m pip install configobj \
+    && python3 -m pip install paho-mqtt \
+    # If your hardware uses a serial port
+    && python3 -m pip install pyserial \
+    # If your hardware uses a USB port
+    && python3 -m pip install pyusb \
+    # If you want extended celestial information:
+    && python3 -m pip install ephem \
+    # If you use MySQL or Maria
+    && python3 -m pip install PyMySQL \
+    # If you use sqlite
+    && python3 -m pip install db-sqlite3
+
+RUN git clone https://github.com/weewx/weewx ~/weewx \
+    && cd ~/weewx \
+    && git checkout $TAG \
+    && . /home/weewx/weewx-venv/bin/activate \
+    && python3 ~/weewx/src/weectl.py station create --no-prompt
+COPY conf-fragments/* /home/weewx/tmp/conf-fragments/
+RUN mkdir -p /home/weewx/tmp \
+    && cat /home/weewx/tmp/conf-fragments/* >> /home/weewx/weewx-data/weewx.conf
+## Belchertown extension
+RUN cd /var/tmp \
+  && . /home/weewx/weewx-venv/bin/activate \
+  && wget https://github.com/poblabs/weewx-belchertown/releases/download/weewx-belchertown-1.3.1/weewx-belchertown-release.1.3.1.tar.gz \
+  && tar zxvf weewx-belchertown-release.1.3.1.tar.gz \
+  && cd weewx-belchertown-master \
+  && python3 ~/weewx/src/weectl.py extension install -y . \
+  && cd /var/tmp \
+  && rm -rf weewx-belchertown-release.1.3.1.tar.gz weewx-belchertown-master \
+## MQTT extension
+  && wget -O weewx-mqtt.zip https://github.com/matthewwall/weewx-mqtt/archive/master.zip \
+  && unzip weewx-mqtt.zip \
+  && cd weewx-mqtt-master \
+  && . /home/weewx/weewx-venv/bin/activate \
+  && python3 ~/weewx/src/weectl.py extension install -y . \
+  && cd /var/tmp \
+  && rm -rf weewx-mqtt.zip weewx-mqtt-master
+#
+ADD ./bin/run.sh $WEEWX_ROOT/bin/run.sh
+CMD $WEEWX_ROOT/bin/run.sh
+WORKDIR $WEEWX_ROOT
