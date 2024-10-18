@@ -1,5 +1,5 @@
-WEEWX_VERSION=5.0.2-1
-docker pull mitct02/weewx:$WEEWX_VERSION
+IMAGE_VERSION=5.1.0-1
+docker pull mitct02/weewx:$IMAGE_VERSION
 
 export TZ=America/New_York
 
@@ -8,4 +8,5 @@ docker run -it --rm \
     -v $(pwd)/weewx.conf:/home/weewx/weewx-data/weewx.conf \
     -v $(pwd)/public_html:/home/weewx/weewx-data/public_html \
     -v $(pwd)/archive:/home/weewx/weewx-data/archive \
-    mitct02/weewx:$WEEWX_VERSION
+    -v $(pwd)/keys:/home/weewx/.ssh \
+    mitct02/weewx:$IMAGE_VERSION $1

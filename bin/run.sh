@@ -10,4 +10,8 @@ echo "weewx is in $WEEWX_ROOT"
 echo "TZ=$TZ"
 cd $WEEWX_ROOT
 
-while true; do /usr/bin/weewxd $CONF_FILE > /dev/stdout; sleep 60; done
+while true; do
+  . /home/weewx/weewx-venv/bin/activate
+  python3 $HOME/weewx/src/weewxd.py $CONF_FILE > /dev/stdout
+  sleep 60
+done
