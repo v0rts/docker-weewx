@@ -1,10 +1,10 @@
 FROM debian:bookworm-slim
 
-MAINTAINER Tom Mitchell "tom@tom.org"
+LABEL maintainer="Tom Mitchell <tom@tom.org>"
 ENV VERSION=5.1.0
 ENV TAG=v5.1.0
 ENV WEEWX_ROOT=/home/weewx/weewx-data
-ENV WEEWX_VERSION=4.10.0
+ENV WEEWX_VERSION=5.1.0
 ENV HOME=/home/weewx
 ENV TZ=America/New_York
 ENV PATH=/usr/bin:$PATH
@@ -12,18 +12,14 @@ ENV PATH=/usr/bin:$PATH
 #    &&  apt-get install curl bash python3 python3-dev python3-pip python3-venv gcc libc-dev libffi-dev tzdata rsync openssh-client openssl git -y
 
 RUN apt-get update \
-    &&  apt-get install wget unzip python3 python3-dev python3-pip python3-venv tzdata rsync openssh-client openssl git libffi-dev python3-setuptools libjpeg-dev -y
-#RUN python3 -m pip install pip --upgrade \
-#    && python3 -m pip install setuptools \
-#    && python3 -m pip install cryptography \
-#    && python3 -m pip install paho-mqtt
-
-RUN addgroup weewx \
+    &&  apt-get install wget unzip python3 python3-dev python3-pip python3-venv tzdata rsync openssh-client openssl git libffi-dev python3-setuptools libjpeg-dev -y \
+    &&  addgroup weewx \
     && useradd -m -g weewx weewx \
     && chown -R weewx:weewx /home/weewx \
     && chmod -R 755 /home/weewx
 
 USER weewx
+
 RUN python3 -m venv /home/weewx/weewx-venv \
     && chmod -R 755 /home/weewx \
     && . /home/weewx/weewx-venv/bin/activate \
@@ -40,13 +36,13 @@ RUN python3 -m venv /home/weewx/weewx-venv \
     # If you use MySQL or Maria
     && python3 -m pip install PyMySQL \
     # If you use sqlite
-    && python3 -m pip install db-sqlite3
-
-RUN git clone https://github.com/weewx/weewx ~/weewx \
+    && python3 -m pip install db-sqlite3 \
+    && git clone https://github.com/weewx/weewx ~/weewx \
     && cd ~/weewx \
     && git checkout $TAG \
     && . /home/weewx/weewx-venv/bin/activate \
     && python3 ~/weewx/src/weectl.py station create --no-prompt
+
 COPY conf-fragments/* /home/weewx/tmp/conf-fragments/
 RUN mkdir -p /home/weewx/tmp \
     && cat /home/weewx/tmp/conf-fragments/* >> /home/weewx/weewx-data/weewx.conf
@@ -68,6 +64,7 @@ RUN cd /var/tmp \
   && cd /var/tmp \
   && rm -rf weewx-mqtt.zip weewx-mqtt-master
 #
+
 ADD ./bin/run.sh $WEEWX_ROOT/bin/run.sh
-CMD $WEEWX_ROOT/bin/run.sh
+CMD ["sh", "-c", "$WEEWX_ROOT/bin/run.sh"]
 WORKDIR $WEEWX_ROOT
