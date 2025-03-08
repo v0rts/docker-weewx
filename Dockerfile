@@ -43,7 +43,7 @@ RUN python3 -m venv /home/weewx/weewx-venv \
     && . /home/weewx/weewx-venv/bin/activate \
     && python3 ~/weewx/src/weectl.py station create --no-prompt
 
-COPY conf-fragments/* /home/weewx/tmp/conf-fragments/
+COPY conf-fragments/*.conf /home/weewx/tmp/conf-fragments/
 RUN mkdir -p /home/weewx/tmp \
     && cat /home/weewx/tmp/conf-fragments/* >> /home/weewx/weewx-data/weewx.conf
 ## Belchertown extension
