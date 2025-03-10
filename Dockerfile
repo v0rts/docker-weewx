@@ -62,7 +62,15 @@ RUN cd /var/tmp \
   && . /home/weewx/weewx-venv/bin/activate \
   && python3 ~/weewx/src/weectl.py extension install -y . \
   && cd /var/tmp \
-  && rm -rf weewx-mqtt.zip weewx-mqtt-master
+  && rm -rf weewx-mqtt.zip weewx-mqtt-master \
+#
+## WLL \
+  && python3 -m pip install requests \
+  && cd /tmp \
+  && wget -O WLLDriver.zip https://github.com/Drealine/weatherlinklive-driver-weewx/releases/download/2022.02.27-2/WLLDriver.zip \
+  && . /home/weewx/weewx-venv/bin/activate \
+  && python3 ~/weewx/src/weectl.py extension install -y WLLDriver.zip \
+  && rm -f WLLDriver.zip
 #
 
 ADD ./bin/run.sh $WEEWX_ROOT/bin/run.sh
