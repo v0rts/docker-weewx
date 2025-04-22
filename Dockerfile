@@ -1,34 +1,78 @@
-FROM phusion/baseimage:18.04-1.0.0-amd64
-ENV WEEWX_VERSION=4.5.1
+FROM debian:bookworm-slim
+
+LABEL maintainer="Tom Mitchell <tom@tom.org>"
+ENV VERSION=5.1.0
+ENV TAG=v5.1.0
+ENV WEEWX_ROOT=/home/weewx/weewx-data
+ENV WEEWX_VERSION=5.1.0
 ENV HOME=/home/weewx
-
-RUN apt-get -y update
-
-RUN apt-get install -y apt-utils
-
 ENV TZ=America/New_York
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+ENV PATH=/usr/bin:$PATH
 
-# debian, ubuntu, mint, raspbian
-# for systems that do not have python 3 installed (for example, ubuntu 18.04 and later):
-RUN apt-get install -y python3 python3-pip python3-configobj python3-serial python3-mysqldb python3-usb default-mysql-client sqlite3 curl rsync ssh tzdata wget gftp syslog-ng xtide xtide-data
-RUN pip3 install Cheetah3 Pillow-PIL pyephem setuptools requests dnspython paho-mqtt configobj
-RUN ln -f -s /usr/bin/python3 /usr/bin/python
-RUN mkdir /var/log/weewx
-# install weewx from source
-ADD dist/weewx-$WEEWX_VERSION /tmp/
-RUN cd /tmp && ./setup.py build
-RUN cd /tmp && echo "tom.org simulator\n1211, foot\n44.491\n-71.689\nn\nus\n3\n" | ./setup.py install
+#    &&  apt-get install curl bash python3 python3-dev python3-pip python3-venv gcc libc-dev libffi-dev tzdata rsync openssh-client openssl git -y
 
-RUN mkdir /home/weewx/tmp
-RUN mkdir /home/weewx/public_html
+RUN apt-get update \
+    &&  apt-get install wget unzip python3 python3-dev python3-pip python3-venv tzdata rsync openssh-client openssl git libffi-dev python3-setuptools libjpeg-dev -y \
+    &&  addgroup weewx \
+    && useradd -m -g weewx weewx \
+    && chown -R weewx:weewx /home/weewx \
+    && chmod -R 755 /home/weewx
 
-RUN mkdir -p /etc/service/weewx
+USER weewx
 
-ADD bin/run /etc/service/weewx/
-RUN chmod 755 /etc/service/weewx/run
+RUN python3 -m venv /home/weewx/weewx-venv \
+    && chmod -R 755 /home/weewx \
+    && . /home/weewx/weewx-venv/bin/activate \
+    && python3 -m pip install Pillow \
+    && python3 -m pip install CT3 \
+    && python3 -m pip install configobj \
+    && python3 -m pip install paho-mqtt \
+    # If your hardware uses a serial port
+    && python3 -m pip install pyserial \
+    # If your hardware uses a USB port
+    && python3 -m pip install pyusb \
+    # If you want extended celestial information:
+    && python3 -m pip install ephem \
+    # If you use MySQL or Maria
+    && python3 -m pip install PyMySQL \
+    # If you use sqlite
+    && python3 -m pip install db-sqlite3 \
+    && git clone https://github.com/weewx/weewx ~/weewx \
+    && cd ~/weewx \
+    && git checkout $TAG \
+    && . /home/weewx/weewx-venv/bin/activate \
+    && python3 ~/weewx/src/weectl.py station create --no-prompt
 
-RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+COPY conf-fragments/*.conf /home/weewx/tmp/conf-fragments/
+RUN mkdir -p /home/weewx/tmp \
+    && cat /home/weewx/tmp/conf-fragments/* >> /home/weewx/weewx-data/weewx.conf
+## Belchertown extension
+RUN cd /var/tmp \
+  && . /home/weewx/weewx-venv/bin/activate \
+  && wget https://github.com/poblabs/weewx-belchertown/releases/download/weewx-belchertown-1.3.1/weewx-belchertown-release.1.3.1.tar.gz \
+  && tar zxvf weewx-belchertown-release.1.3.1.tar.gz \
+  && cd weewx-belchertown-master \
+  && python3 ~/weewx/src/weectl.py extension install -y . \
+  && cd /var/tmp \
+  && rm -rf weewx-belchertown-release.1.3.1.tar.gz weewx-belchertown-master \
+## MQTT extension
+  && wget -O weewx-mqtt.zip https://github.com/matthewwall/weewx-mqtt/archive/master.zip \
+  && unzip weewx-mqtt.zip \
+  && cd weewx-mqtt-master \
+  && . /home/weewx/weewx-venv/bin/activate \
+  && python3 ~/weewx/src/weectl.py extension install -y . \
+  && cd /var/tmp \
+  && rm -rf weewx-mqtt.zip weewx-mqtt-master \
+#
+## WLL \
+  && python3 -m pip install requests \
+  && cd /tmp \
+  && wget -O WLLDriver.zip https://github.com/Drealine/weatherlinklive-driver-weewx/releases/download/2022.02.27-2/WLLDriver.zip \
+  && . /home/weewx/weewx-venv/bin/activate \
+  && python3 ~/weewx/src/weectl.py extension install -y WLLDriver.zip \
+  && rm -f WLLDriver.zip
+#
 
-CMD ["/sbin/my_init"]
-
+ADD ./bin/run.sh $WEEWX_ROOT/bin/run.sh
+CMD ["sh", "-c", "$WEEWX_ROOT/bin/run.sh"]
+WORKDIR $WEEWX_ROOT
