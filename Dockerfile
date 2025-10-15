@@ -1,10 +1,10 @@
 FROM debian:bookworm-slim
 
 LABEL maintainer="Tom Mitchell <tom@tom.org>"
-ENV VERSION=5.1.0
-ENV TAG=v5.1.0
+ENV VERSION=5.2.0
+ENV TAG=v5.2.0
 ENV WEEWX_ROOT=/home/weewx/weewx-data
-ENV WEEWX_VERSION=5.1.0
+ENV WEEWX_VERSION=5.2.0
 ENV HOME=/home/weewx
 ENV TZ=America/New_York
 ENV PATH=/usr/bin:$PATH
