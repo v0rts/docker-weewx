@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-REV=2
+REV=3
 WEEWX_VERSION=5.2.0
 IMAGE_VERSION=$WEEWX_VERSION-$REV
 
