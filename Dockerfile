@@ -8,15 +8,23 @@ ENV WEEWX_VERSION=5.2.0
 ENV HOME=/home/weewx
 ENV TZ=America/New_York
 ENV PATH=/usr/bin:$PATH
+ENV LANG=en_US.UTF-8
 
 #    &&  apt-get install curl bash python3 python3-dev python3-pip python3-venv gcc libc-dev libffi-dev tzdata rsync openssh-client openssl git -y
 
 RUN apt-get update \
-    &&  apt-get install wget unzip python3 python3-dev python3-pip python3-venv tzdata rsync openssh-client openssl git libffi-dev python3-setuptools libjpeg-dev -y \
-    &&  addgroup weewx \
+    && apt-get install wget unzip python3 python3-dev python3-pip python3-venv tzdata rsync openssh-client openssl git libffi-dev python3-setuptools libjpeg-dev locales -y \
+    && rm -rf /var/lib/apt/lists/* \
+    && echo "en_US.UTF-8 UTF-8" > /etc/locale.gen \
+    && echo "en_GB.UTF-8 UTF-8" >> /etc/locale.gen \
+    && echo "de_DE.UTF-8 UTF-8" >> /etc/locale.gen \
+    && echo "nl_NL.UTF-8 UTF-8" >> /etc/locale.gen \
+    && locale-gen \
+    && addgroup weewx \
     && useradd -m -g weewx weewx \
     && chown -R weewx:weewx /home/weewx \
     && chmod -R 755 /home/weewx
+
 
 USER weewx
 
