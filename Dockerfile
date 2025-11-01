@@ -11,7 +11,7 @@ FROM debian:bookworm-slim
   ENV LANG=en_US.UTF-8
 
   # Define build-time dependencies that can be removed after build
-  ARG BUILD_DEPS="wget unzip git python3-dev libffi-dev libjpeg-dev"
+  ARG BUILD_DEPS="wget unzip git python3-dev libffi-dev libjpeg-dev gcc g++ build-essential zlib1g-dev"
 
   RUN apt-get update \
       && apt-get install --no-install-recommends -y \
@@ -39,9 +39,9 @@ FROM debian:bookworm-slim
   USER weewx
 
   RUN python3 -m venv /home/weewx/weewx-venv \
-      && chmod -R 755 /home/weewx \
-      && . /home/weewx/weewx-venv/bin/activate \
-      # Install all pip packages in one command with --no-cache-dir
+      && chmod -R 755 /home/weewx
+
+  RUN . /home/weewx/weewx-venv/bin/activate \
       && python3 -m pip install --no-cache-dir \
           Pillow \
           CT3 \
@@ -52,19 +52,18 @@ FROM debian:bookworm-slim
           ephem \
           PyMySQL \
           db-sqlite3 \
-          requests \
-      && git clone https://github.com/weewx/weewx ~/weewx \
+          requests
+
+  RUN git clone https://github.com/weewx/weewx ~/weewx \
       && cd ~/weewx \
       && git checkout $TAG \
-      # Remove git history to save space
       && rm -rf ~/weewx/.git \
-      # Remove docs, tests, and other unnecessary files
-      && rm -rf ~/weewx/docs ~/weewx/tests ~/weewx/.github \
-      && . /home/weewx/weewx-venv/bin/activate \
-      && python3 ~/weewx/src/weectl.py station create --no-prompt \
-      # Clean up Python bytecode
+      && rm -rf ~/weewx/docs ~/weewx/tests ~/weewx/.github ~/weewx/examples \
       && find /home/weewx/weewx-venv -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true \
       && find /home/weewx/weewx-venv -type f -name '*.pyc' -delete 2>/dev/null || true
+
+  RUN . /home/weewx/weewx-venv/bin/activate \
+      && python3 ~/weewx/src/weectl.py station create --no-prompt
 
   COPY conf-fragments/*.conf /home/weewx/tmp/conf-fragments/
   RUN mkdir -p /home/weewx/tmp \
